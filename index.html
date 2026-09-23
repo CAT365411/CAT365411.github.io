@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yelysei Zelenin | Portfolio</title>
+    <title>LibreHub | Digital Freedom & Open-Source Toolkit</title>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --text-color: #c9d1d9;
-            --accent-color: #58a6ff;
-            --accent-hover: #1f6feb;
-            --border-color: #30363d;
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #1f2937;
+            --success-color: #10b981;
         }
 
         body.light-mode {
-            --bg-color: #ffffff;
-            --card-bg: #f6f8fa;
-            --text-color: #24292e;
-            --accent-color: #0366d6;
-            --accent-hover: #0056b3;
-            --border-color: #e1e4e8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --success-color: #059669;
         }
 
         * {
@@ -28,7 +32,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
         }
 
         body {
@@ -43,18 +47,23 @@
 
         header {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        h1 {
-            font-size: 1.8rem;
+        .logo-area h1 {
+            font-size: 1.6rem;
             color: var(--accent-color);
+        }
+
+        .logo-area p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
 
         .theme-btn {
@@ -62,7 +71,7 @@
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
         }
@@ -71,12 +80,46 @@
             border-color: var(--accent-color);
         }
 
+        nav {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
         main {
             width: 100%;
-            max-width: 800px;
-            display: flex;
+            max-width: 900px;
+        }
+
+        .tab-content {
+            display: none;
             flex-direction: column;
             gap: 20px;
+        }
+
+        .tab-content.active {
+            display: flex;
         }
 
         .card {
@@ -84,25 +127,42 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .card h2 {
             margin-bottom: 15px;
             color: var(--accent-color);
+            font-size: 1.3rem;
         }
 
         p {
             line-height: 1.6;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: var(--text-color);
         }
 
-        /* Interactive JS Widget Styles */
-        .interactive-box {
+        .muted {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Utility Form Styles */
+        .tool-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="text"] {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
         }
 
         .action-btn {
@@ -110,98 +170,288 @@
             color: white;
             border: none;
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
+            width: fit-content;
         }
 
         .action-btn:hover {
             background-color: var(--accent-hover);
         }
 
-        #counter-display {
-            font-size: 1.2rem;
-            font-weight: bold;
+        .output-box {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin-top: 10px;
+        }
+
+        /* Game Canvas Container */
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        canvas {
+            background: #000;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            max-width: 100%;
+        }
+
+        /* Donation Section Styling */
+        .crypto-address {
+            background: var(--bg-color);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            border: 1px dashed var(--border-color);
+            margin-top: 5px;
+            word-break: break-all;
         }
 
         footer {
             margin-top: 50px;
-            font-size: 0.9rem;
-            color: #8b949e;
+            font-size: 0.85rem;
+            color: var(--text-muted);
             text-align: center;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 900px;
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 id="greeting">Hello, Visitor!</h1>
-        <button class="theme-btn" id="themeToggle">🌓 Toggle Theme</button>
+        <div class="logo-area">
+            <h1 id="greeting">LibreHub</h1>
+            <p>Digital Freedom, Open-Source Tools & Utilities</p>
+        </div>
+        <button class="theme-btn" id="themeToggle">🌓 Theme</button>
     </header>
 
+    <nav>
+        <button class="tab-btn active" onclick="switchTab('home')">🏠 Home</button>
+        <button class="tab-btn" onclick="switchTab('utils')">🛠️ Privacy Utilities</button>
+        <button class="tab-btn" onclick="switchTab('mods')">🏎️ LFS & Mod Hub</button>
+        <button class="tab-btn" onclick="switchTab('game')">🎮 Web Arcade</button>
+        <button class="tab-btn" onclick="switchTab('donate')">☕ Support</button>
+    </nav>
+
     <main>
-        <!-- About Section -->
-        <div class="card">
-            <h2>About Me</h2>
-            <p>Welcome to my personal website! I built this using the classic <strong>HTML, CSS, and JavaScript</strong> combination, hosted seamlessly for free on GitHub Pages.</p>
-            <p id="live-time">Loading local time...</p>
+        <!-- HOME TAB -->
+        <div id="home" class="tab-content active">
+            <div class="card">
+                <h2>Welcome to the Resistance</h2>
+                <p>Welcome to your independent, censorship-resistant digital hub. This site is hosted completely free via GitHub Pages, giving you an open-source platform free from corporate overreach.</p>
+                <p>Explore privacy utilities that run directly in your browser, look up community mod guides, play lightweight games, or find out how to support independent infrastructure.</p>
+                <p id="live-time" class="muted">🕒 Loading local time...</p>
+            </div>
+            <div class="card">
+                <h2>Features Available Here</h2>
+                <p>⚡ <strong>Client-side Utilities:</strong> Password generators, text tools, and privacy scripts.</p>
+                <p>🔧 <strong>Community Mods & Info:</strong> Open-source resources for simulations and abandonware.</p>
+                <p>🎮 <strong>Instant Arcade:</strong> Play lightweight HTML5 games right in your tab without downloads.</p>
+            </div>
         </div>
 
-        <!-- Projects Section -->
-        <div class="card">
-            <h2>My Projects</h2>
-            <p>🚀 Stay tuned! I am currently building awesome web projects to showcase right here.</p>
+        <!-- PRIVACY UTILITIES TAB -->
+        <div id="utils" class="tab-content">
+            <div class="card">
+                <h2>Secure Password Generator</h2>
+                <p class="muted">Generates strong, crypto-random passwords locally in your browser. Nothing is ever sent to a server.</p>
+                <div class="tool-group">
+                    <button class="action-btn" onclick="generatePassword()">Generate Password</button>
+                    <div id="pw-output" class="output-box">Click generate...</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Base64 Text Encoder / Decoder</h2>
+                <p class="muted">Quickly encode strings for safe data handling.</p>
+                <div class="tool-group">
+                    <input type="text" id="b64-input" placeholder="Type text here...">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="action-btn" onclick="encodeB64()">Encode</button>
+                        <button class="action-btn" onclick="decodeB64()" style="background-color: var(--text-muted);">Decode</button>
+                    </div>
+                    <div id="b64-output" class="output-box">Result appears here...</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Interactive JavaScript Section -->
-        <div class="card interactive-box">
-            <h2>JavaScript Playground</h2>
-            <p>Test out the interactivity powered by JavaScript right on this page:</p>
-            <div id="counter-display">Button clicked: 0 times</div>
-            <button class="action-btn" id="clickMeBtn">Click Me!</button>
+        <!-- LFS & MOD HUB TAB -->
+        <div id="mods" class="tab-content">
+            <div class="card">
+                <h2>Live for Speed (LFS) Resource Corner</h2>
+                <p>Dedicated to lightweight racing simulations and custom physics configuration tuning.</p>
+                <p>💡 <em>Looking for storage-saving solutions?</em> While massive files require downloads, clean configuration scripts and layout files can be shared lightweight right here.</p>
+                <div class="tool-group">
+                    <a href="https://www.liveforspeed.net/" target="_blank"><button class="action-btn">Official LFS Website</button></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEB ARCADE TAB -->
+        <div id="game" class="tab-content">
+            <div class="card" id="game-container">
+                <h2>Mini Retro Racer</h2>
+                <p class="muted">Use Arrow Keys or A/D to steer away from incoming road obstacles!</p>
+                <canvas id="gameCanvas" width="400" height="300"></canvas>
+                <div id="score-board" style="font-weight: bold;">Score: 0</div>
+                <button class="action-btn" onclick="startGame()">Start / Reset Game</button>
+            </div>
+        </div>
+
+        <!-- SUPPORT / DONATE TAB -->
+        <div id="donate" class="tab-content">
+            <div class="card">
+                <h2>Support Independent Development</h2>
+                <p>Because traditional online banking and merchant cards can occasionally face restrictive blocks, decentralized support ensures this platform stays online indefinitely.</p>
+                <p>If these tools or resources saved you time, consider dropping a small crypto contribution:</p>
+                
+                <p style="margin-top: 15px; font-weight: bold;">Monero (XMR) - Recommended for Privacy:</p>
+                <div class="crypto-address">888tNkZrPN6JsEgekjMnSB9aV84U55L9n8n3cZz3n... (Placeholder Wallet)</div>
+
+                <p style="margin-top: 15px; font-weight: bold;">Litecoin (LTC) / USDT:</p>
+                <div class="crypto-address">LTC1qplaceholderaddressxyz893427... (Placeholder Wallet)</div>
+                
+                <p class="muted" style="margin-top: 15px;">Thank you for keeping free digital tools alive!</p>
+            </div>
         </div>
     </main>
 
     <footer>
-        <p>&copy; <span id="currentYear"></span> Yelysei Zelenin. Powered by GitHub Pages.</p>
+        <p>&copy; <span id="currentYear"></span> LibreHub. Built with HTML, CSS, & JavaScript. Hosted on GitHub Pages.</p>
     </footer>
 
     <script>
-        // 1. Dynamic Greeting based on time of day
-        const hour = new Date().getHours();
-        const greetingElement = document.getElementById('greeting');
-        if (hour < 12) {
-            greetingElement.textContent = "Good Morning, Welcome!";
-        } else if (hour < 18) {
-            greetingElement.textContent = "Good Afternoon, Welcome!";
-        } else {
-            greetingElement.textContent = "Good Evening, Welcome!";
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        // 2. Live Clock & Dynamic Year in Footer
+        // Live Clock & Footer Year
         document.getElementById('currentYear').textContent = new Date().getFullYear();
-        
         setInterval(() => {
             const now = new Date();
             document.getElementById('live-time').textContent = `🕒 Current Time: ${now.toLocaleTimeString()}`;
         }, 1000);
 
-        // 3. Interactive Click Counter
-        let clickCount = 0;
-        const btn = document.getElementById('clickMeBtn');
-        const display = document.getElementById('counter-display');
-
-        btn.addEventListener('click', () => {
-            clickCount++;
-            display.textContent = `Button clicked: ${clickCount} time${clickCount === 1 ? '' : 's'}`;
-        });
-
-        // 4. Dark / Light Mode Switcher
+        // Dark/Light Mode Toggle
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
         });
-    </script>
 
+        // Tool 1: Password Generator
+        function generatePassword() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            let password = "";
+            for (let i = 0; i < 16; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('pw-output').textContent = password;
+        }
+
+        // Tool 2: Base64 Encoder/Decoder
+        function encodeB64() {
+            const val = document.getElementById('b64-input').value;
+            try {
+                document.getElementById('b64-output').textContent = btoa(val);
+            } catch (e) {
+                document.getElementById('b64-output').textContent = "Error encoding string.";
+            }
+        }
+        function decodeB64() {
+            const val = document.getElementById('b64-input').value;
+            try {
+                document.getElementById('b64-output').textContent = atob(val);
+            } catch (e) {
+                document.getElementById('b64-output').textContent = "Invalid Base64 string.";
+            }
+        }
+
+        // Mini Game Logic (Simple Canvas Racer)
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let gameInterval = null;
+        let score = 0;
+        let carX = 180;
+        let obstacleY = -50;
+        let obstacleX = Math.floor(Math.random() * 300) + 50;
+        let isPlaying = false;
+
+        document.addEventListener("keydown", (e) => {
+            if (!isPlaying) return;
+            if (e.key === "ArrowLeft" || e.key === "a") carX = Math.max(20, carX - 20);
+            if (e.key === "ArrowRight" || e.key === "d") carX = Math.min(340, carX + 20);
+        });
+
+        function startGame() {
+            score = 0;
+            carX = 180;
+            obstacleY = -50;
+            obstacleX = Math.floor(Math.random() * 300) + 50;
+            isPlaying = true;
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(updateGame, 30);
+        }
+
+        function updateGame() {
+            // Clear canvas
+            ctx.fillStyle = "#111";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw road lines
+            ctx.strokeStyle = "#444";
+            ctx.setLineDash([20, 20]);
+            ctx.beginPath();
+            ctx.moveTo(200, 0);
+            ctx.lineTo(200, canvas.height);
+            ctx.stroke();
+
+            // Move and draw obstacle
+            obstacleY += 6;
+            if (obstacleY > canvas.height) {
+                obstacleY = -50;
+                obstacleX = Math.floor(Math.random() * 300) + 50;
+                score += 10;
+            }
+            ctx.fillStyle = "#ef4444";
+            ctx.fillRect(obstacleX, obstacleY, 40, 40);
+
+            // Draw player car
+            ctx.fillStyle = "#3b82f6";
+            ctx.fillRect(carX, canvas.height - 70, 40, 50);
+
+            // Collision Check
+            if (
+                obstacleY + 40 >= canvas.height - 70 &&
+                obstacleY <= canvas.height - 20 &&
+                Math.abs(obstacleX - carX) < 35
+            ) {
+                isPlaying = false;
+                clearInterval(gameInterval);
+                ctx.fillStyle = "white";
+                ctx.font = "20px sans-serif";
+                ctx.fillText("GAME OVER", 130, 150);
+            }
+
+            document.getElementById("score-board").textContent = "Score: " + score;
+        }
+    </script>
 </body>
 </html>
