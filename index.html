@@ -145,7 +145,6 @@
             font-size: 0.9rem;
         }
 
-        /* Utility Form Styles */
         .tool-group {
             display: flex;
             flex-direction: column;
@@ -191,7 +190,6 @@
             margin-top: 10px;
         }
 
-        /* Game Canvas Container */
         #game-container {
             display: flex;
             flex-direction: column;
@@ -206,7 +204,14 @@
             max-width: 100%;
         }
 
-        /* Donation Section Styling */
+        /* Crypto Address Box Styling with copy option */
+        .crypto-container {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
         .crypto-address {
             background: var(--bg-color);
             padding: 10px;
@@ -214,8 +219,22 @@
             font-family: monospace;
             font-size: 0.85rem;
             border: 1px dashed var(--border-color);
-            margin-top: 5px;
             word-break: break-all;
+        }
+
+        .copy-btn {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: fit-content;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent-color);
         }
 
         footer {
@@ -318,15 +337,21 @@
             <div class="card">
                 <h2>Support Independent Development</h2>
                 <p>Because traditional online banking and merchant cards can occasionally face restrictive blocks, decentralized support ensures this platform stays online indefinitely.</p>
-                <p>If these tools or resources saved you time, consider dropping a small crypto contribution:</p>
+                <p>If these tools or resources saved you time, consider dropping a real crypto contribution directly into the wallets below:</p>
                 
                 <p style="margin-top: 15px; font-weight: bold;">Monero (XMR) - Recommended for Privacy:</p>
-                <div class="crypto-address">888tNkZrPN6JsEgekjMnSB9aV84U55L9n8n3cZz3n... (Placeholder Wallet)</div>
+                <div class="crypto-container">
+                    <div class="crypto-address" id="xmr-addr">YOUR_ACTUAL_MONERO_ADDRESS_HERE</div>
+                    <button class="copy-btn" onclick="copyCrypto('xmr-addr', this)">Copy Address</button>
+                </div>
 
-                <p style="margin-top: 15px; font-weight: bold;">Litecoin (LTC) / USDT:</p>
-                <div class="crypto-address">LTC1qplaceholderaddressxyz893427... (Placeholder Wallet)</div>
+                <p style="margin-top: 15px; font-weight: bold;">Litecoin (LTC):</p>
+                <div class="crypto-container">
+                    <div class="crypto-address" id="ltc-addr">YOUR_ACTUAL_LITECOIN_ADDRESS_HERE</div>
+                    <button class="copy-btn" onclick="copyCrypto('ltc-addr', this)">Copy Address</button>
+                </div>
                 
-                <p class="muted" style="margin-top: 15px;">Thank you for keeping free digital tools alive!</p>
+                <p class="muted" style="margin-top: 20px;">Thank you for keeping free digital tools alive!</p>
             </div>
         </div>
     </main>
@@ -336,6 +361,15 @@
     </footer>
 
     <script>
+        // 1. Synchronize Theme with User's Local Time Automatically
+        const currentHour = new Date().getHours();
+        // If it's between 6 AM (06:00) and 6 PM (18:00), default to Light Mode. Otherwise, Dark Mode.
+        if (currentHour >= 6 && currentHour < 18) {
+            document.body.classList.add('light-mode');
+        } else {
+            document.body.classList.remove('light-mode');
+        }
+
         // Tab Navigation Logic
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -352,11 +386,23 @@
             document.getElementById('live-time').textContent = `🕒 Current Time: ${now.toLocaleTimeString()}`;
         }, 1000);
 
-        // Dark/Light Mode Toggle
+        // Manual Dark/Light Mode Toggle Button
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
         });
+
+        // Copy Crypto Address Functionality
+        function copyCrypto(elementId, btn) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = "Copied!";
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
 
         // Tool 1: Password Generator
         function generatePassword() {
