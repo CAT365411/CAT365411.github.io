@@ -13,7 +13,6 @@
             --accent-color: #3b82f6;
             --accent-hover: #2563eb;
             --border-color: #1f2937;
-            --success-color: #10b981;
         }
 
         body.light-mode {
@@ -24,7 +23,6 @@
             --accent-color: #2563eb;
             --accent-hover: #1d4ed8;
             --border-color: #e2e8f0;
-            --success-color: #059669;
         }
 
         * {
@@ -174,6 +172,9 @@
             font-weight: bold;
             cursor: pointer;
             width: fit-content;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
 
         .action-btn:hover {
@@ -242,7 +243,7 @@
     <nav>
         <button class="tab-btn active" onclick="switchTab('home')">🏠 Home</button>
         <button class="tab-btn" onclick="switchTab('utils')">🛠️ Privacy Utilities</button>
-        <button class="tab-btn" onclick="switchTab('mods')">🏎️ LFS & Mod Hub</button>
+        <button class="tab-btn" onclick="switchTab('openmods')">🌐 Open-Source & Indie</button>
         <button class="tab-btn" onclick="switchTab('game')">🎮 Web Arcade</button>
         <button class="tab-btn" onclick="switchTab('donate')">☕ Support</button>
     </nav>
@@ -252,15 +253,15 @@
         <div id="home" class="tab-content active">
             <div class="card">
                 <h2>Welcome to the Resistance</h2>
-                <p>Welcome to your independent, censorship-resistant digital hub. This site is hosted completely free via GitHub Pages, giving you an open-source platform free from corporate overreach.</p>
-                <p>Explore privacy utilities that run directly in your browser, look up community mod guides, play lightweight games, or find out how to support independent infrastructure.</p>
+                <p>Welcome to your independent, censorship-resistant digital hub. This site is hosted completely free via GitHub Pages, giving you an open-source platform free from corporate gatekeepers.</p>
+                <p>Explore privacy utilities that run directly in your browser, check out open-source indie projects, play lightweight games, or find out how to support independent infrastructure.</p>
                 <p id="live-time" class="muted">🕒 Loading local time...</p>
             </div>
             <div class="card">
-                <h2>Features Available Here</h2>
-                <p>⚡ <strong>Client-side Utilities:</strong> Password generators, text tools, and privacy scripts.</p>
-                <p>🔧 <strong>Community Mods & Info:</strong> Open-source resources for simulations and abandonware.</p>
-                <p>🎮 <strong>Instant Arcade:</strong> Play lightweight HTML5 games right in your tab without downloads.</p>
+                <h2>Platform Principles</h2>
+                <p>⚡ <strong>100% Client-Side:</strong> No data tracking, server databases, or corporate logs.</p>
+                <p>🌐 <strong>True Open Source:</strong> Highlighting software built by the community, for the community.</p>
+                <p>🎮 <strong>Zero Bloat:</strong> Lightweight utilities and games that load instantly.</p>
             </div>
         </div>
 
@@ -268,7 +269,7 @@
         <div id="utils" class="tab-content">
             <div class="card">
                 <h2>Secure Password Generator</h2>
-                <p class="muted">Generates strong, crypto-random passwords locally in your browser. Nothing is ever sent to a server.</p>
+                <p class="muted">Generates strong, crypto-random passwords locally in your browser.</p>
                 <div class="tool-group">
                     <button class="action-btn" onclick="generatePassword()">Generate Password</button>
                     <div id="pw-output" class="output-box">Click generate...</div>
@@ -288,14 +289,15 @@
             </div>
         </div>
 
-        <!-- LFS & MOD HUB TAB -->
-        <div id="mods" class="tab-content">
+        <!-- OPEN SOURCE & INDIE TAB -->
+        <div id="openmods" class="tab-content">
             <div class="card">
-                <h2>Live for Speed (LFS) Resource Corner</h2>
-                <p>Dedicated to lightweight racing simulations and custom physics configuration tuning.</p>
-                <p>💡 <em>Looking for storage-saving solutions?</em> While massive files require downloads, clean configuration scripts and layout files can be shared lightweight right here.</p>
-                <div class="tool-group">
-                    <a href="https://www.liveforspeed.net/" target="_blank"><button class="action-btn">Official LFS Website</button></a>
+                <h2>Open-Source & Community Spotlight</h2>
+                <p>Instead of corporate or proprietary software that doesn't support indie developers, this space champions truly open projects.</p>
+                <p>Check out incredible open-source game engines and community preservation projects that give full control back to the user:</p>
+                <div class="tool-group" style="gap: 15px;">
+                    <a href="https://godotengine.org/" target="_blank" class="action-btn">Godot Engine (Open Source Game Dev)</a>
+                    <a href="https://itch.io/games/free/tag-open-source" target="_blank" class="action-btn" style="background-color: #10b981;">Itch.io Open-Source Games</a>
                 </div>
             </div>
         </div>
@@ -304,7 +306,7 @@
         <div id="game" class="tab-content">
             <div class="card" id="game-container">
                 <h2>Mini Retro Racer</h2>
-                <p class="muted">Use Arrow Keys or A/D to steer away from incoming road obstacles!</p>
+                <p class="muted">Use Arrow Keys or A/D to steer away from incoming obstacles!</p>
                 <canvas id="gameCanvas" width="400" height="300"></canvas>
                 <div id="score-board" style="font-weight: bold;">Score: 0</div>
                 <button class="action-btn" onclick="startGame()">Start / Reset Game</button>
@@ -411,11 +413,9 @@
         }
 
         function updateGame() {
-            // Clear canvas
             ctx.fillStyle = "#111";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw road lines
             ctx.strokeStyle = "#444";
             ctx.setLineDash([20, 20]);
             ctx.beginPath();
@@ -423,7 +423,6 @@
             ctx.lineTo(200, canvas.height);
             ctx.stroke();
 
-            // Move and draw obstacle
             obstacleY += 6;
             if (obstacleY > canvas.height) {
                 obstacleY = -50;
@@ -433,11 +432,9 @@
             ctx.fillStyle = "#ef4444";
             ctx.fillRect(obstacleX, obstacleY, 40, 40);
 
-            // Draw player car
             ctx.fillStyle = "#3b82f6";
             ctx.fillRect(carX, canvas.height - 70, 40, 50);
 
-            // Collision Check
             if (
                 obstacleY + 40 >= canvas.height - 70 &&
                 obstacleY <= canvas.height - 20 &&
