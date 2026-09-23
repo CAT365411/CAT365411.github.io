@@ -3,20 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My First GitHub Website</title>
+    <title>Yelysei Zelenin | Portfolio</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-            background-color: #f4f4f9;
-            color: #333;
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --accent-color: #58a6ff;
+            --accent-hover: #1f6feb;
+            --border-color: #30363d;
         }
-        h1 { color: #0366d6; }
+
+        body.light-mode {
+            --bg-color: #ffffff;
+            --card-bg: #f6f8fa;
+            --text-color: #24292e;
+            --accent-color: #0366d6;
+            --accent-hover: #0056b3;
+            --border-color: #e1e4e8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        /* Interactive JS Widget Styles */
+        .interactive-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .action-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        #counter-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: #8b949e;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>Welcome to my brand new website hosted on GitHub Pages!</p>
+
+    <header>
+        <h1 id="greeting">Hello, Visitor!</h1>
+        <button class="theme-btn" id="themeToggle">🌓 Toggle Theme</button>
+    </header>
+
+    <main>
+        <!-- About Section -->
+        <div class="card">
+            <h2>About Me</h2>
+            <p>Welcome to my personal website! I built this using the classic <strong>HTML, CSS, and JavaScript</strong> combination, hosted seamlessly for free on GitHub Pages.</p>
+            <p id="live-time">Loading local time...</p>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="card">
+            <h2>My Projects</h2>
+            <p>🚀 Stay tuned! I am currently building awesome web projects to showcase right here.</p>
+        </div>
+
+        <!-- Interactive JavaScript Section -->
+        <div class="card interactive-box">
+            <h2>JavaScript Playground</h2>
+            <p>Test out the interactivity powered by JavaScript right on this page:</p>
+            <div id="counter-display">Button clicked: 0 times</div>
+            <button class="action-btn" id="clickMeBtn">Click Me!</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="currentYear"></span> Yelysei Zelenin. Powered by GitHub Pages.</p>
+    </footer>
+
+    <script>
+        // 1. Dynamic Greeting based on time of day
+        const hour = new Date().getHours();
+        const greetingElement = document.getElementById('greeting');
+        if (hour < 12) {
+            greetingElement.textContent = "Good Morning, Welcome!";
+        } else if (hour < 18) {
+            greetingElement.textContent = "Good Afternoon, Welcome!";
+        } else {
+            greetingElement.textContent = "Good Evening, Welcome!";
+        }
+
+        // 2. Live Clock & Dynamic Year in Footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-time').textContent = `🕒 Current Time: ${now.toLocaleTimeString()}`;
+        }, 1000);
+
+        // 3. Interactive Click Counter
+        let clickCount = 0;
+        const btn = document.getElementById('clickMeBtn');
+        const display = document.getElementById('counter-display');
+
+        btn.addEventListener('click', () => {
+            clickCount++;
+            display.textContent = `Button clicked: ${clickCount} time${clickCount === 1 ? '' : 's'}`;
+        });
+
+        // 4. Dark / Light Mode Switcher
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
+    </script>
+
 </body>
 </html>
