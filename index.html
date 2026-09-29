@@ -262,6 +262,7 @@
     <nav>
         <button class="tab-btn active" onclick="switchTab('home')">🏠 Home</button>
         <button class="tab-btn" onclick="switchTab('utils')">🛠️ Privacy Utilities</button>
+        <button class="tab-btn" onclick="switchTab('aiagent')">🤖 Local AI Agent</button>
         <button class="tab-btn" onclick="switchTab('openmods')">🌐 Open-Source & Indie</button>
         <button class="tab-btn" onclick="switchTab('game')">🎮 Web Arcade</button>
         <button class="tab-btn" onclick="switchTab('donate')">☕ Support</button>
@@ -305,6 +306,46 @@
                     </div>
                     <div id="b64-output" class="output-box">Result appears here...</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- LOCAL AI AGENT TAB -->
+        <div id="aiagent" class="tab-content">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h2>🤖 Local AI Agent Framework</h2>
+                    <span style="background: rgba(59, 130, 246, 0.2); color: var(--accent-color); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold;">Open Source</span>
+                </div>
+                
+                <p>A lightweight, privacy-focused local automation agent designed to execute local tasks, manage sandbox execution, and stream interactions securely via FastAPI and WebSockets.</p>
+
+                <div style="margin: 20px 0;">
+                    <p style="font-weight: bold; margin-bottom: 8px;">Key Features:</p>
+                    <ul style="margin-left: 20px; line-height: 1.8; color: var(--text-muted);">
+                        <li>⚡ <strong>FastAPI Core:</strong> Async Python backend with live WebSocket communication.</li>
+                        <li>🛡️ <strong>Sandboxed Execution:</strong> Human-in-the-loop review queues for local system control.</li>
+                        <li>📺 <strong>Live Streaming:</strong> Canvas & WebSocket-based screen state and desktop automation.</li>
+                        <li>🔒 <strong>100% Offline Capable:</strong> Zero external telemetries or unauthorized cloud calls.</li>
+                    </ul>
+                </div>
+
+                <div class="tool-group" style="flex-direction: row; gap: 12px; margin-top: 20px;">
+                    <a href="https://github.com/CAT365411/CAT365411.github.io/tree/main/local-ai-agent" target="_blank" class="action-btn" style="background-color: #8b5cf6;">
+                        📂 View Repository
+                    </a>
+                    <a href="https://github.com/CAT365411/CAT365411.github.io/tree/main/local-ai-agent#readme" target="_blank" class="action-btn" style="background-color: var(--border-color); color: var(--text-color); border: 1px solid var(--border-color);">
+                        📖 Readme & Setup Guide
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🚀 Quick Local Setup</h2>
+                <p class="muted">Clone the repo and run locally in under 2 minutes:</p>
+                <div class="output-box" style="white-space: pre-wrap; font-size: 0.85rem;">git clone https://github.com/CAT365411/CAT365411.github.io.git
+cd CAT365411.github.io/local-ai-agent
+pip install -r requirements.txt
+python agent/main.py</div>
             </div>
         </div>
 
