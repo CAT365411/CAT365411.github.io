@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Local Agent App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b',
+                        accent: '#3b82f6',
+                    },
+                    keyframes: {
+                        rgbGlow: {
+                            '0%': { borderColor: '#ef4444', color: '#ef4444' },
+                            '33%': { borderColor: '#10b981', color: '#10b981' },
+                            '66%': { borderColor: '#3b82f6', color: '#3b82f6' },
+                            '100%': { borderColor: '#ef4444', color: '#ef4444' }
+                        },
+                        rgbBgGlow: {
+                            '0%': { borderColor: '#ef4444' },
+                            '33%': { borderColor: '#10b981' },
+                            '66%': { borderColor: '#3b82f6' },
+                            '100%': { borderColor: '#ef4444' }
+                        }
+                    },
+                    animation: {
+                        rgb: 'rgbGlow 6s infinite',
+                        rgbBorder: 'rgbBgGlow 6s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body id="bodyRoot" class="bg-darkbg text-slate-100 min-h-screen font-sans antialiased p-6 transition-colors duration-200">
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- Header with App Controls & Theme Selector -->
+        <div id="headerSection" class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-4 gap-4 transition-colors duration-200">
+            <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+                🤖 Local AI Agent App
+            </h1>
+            
+            <div class="flex items-center gap-3">
+                <!-- Theme Selector Dropdown -->
+                <select id="themeSelector" onchange="setTheme(this.value)" class="bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-accent">
+                    <option value="dark">🌙 Dark</option>
+                    <option value="light">☀️ Light</option>
+                    <option value="custom">🎨 Custom...</option>
+                    <option value="sync">🔄 Sync (Auto)</option>
+                </select>
+
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Custom Theme Builder Panel -->
+        <div id="customPanel" class="hidden bg-slate-800/80 border border-slate-700 rounded-xl p-4 shadow-lg flex flex-wrap gap-4 items-center justify-between">
+            <span class="text-sm font-medium text-slate-200">🛠️ Customize Your Colors:</span>
+            <div class="flex items-center gap-4 flex-wrap">
+                <label class="text-xs text-slate-300 flex items-center gap-1">
+                    BG: <input type="color" id="customBgColor" value="#0f172a" onchange="applyCustomPreferences()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                </label>
+                <label class="text-xs text-slate-300 flex items-center gap-1">
+                    Card: <input type="color" id="customCardColor" value="#1e293b" onchange="applyCustomPreferences()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                </label>
+                <label class="text-xs text-slate-300 flex items-center gap-1">
+                    Accent: <input type="color" id="customAccentColor" value="#3b82f6" onchange="applyCustomPreferences()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                </label>
+                <label class="text-xs text-amber-400 flex items-center gap-1 font-semibold cursor-pointer">
+                    <input type="checkbox" id="rgbModeToggle" onchange="applyCustomPreferences()" class="w-4 h-4 rounded accent-purple-500"> Rainbow Mode
+                </label>
+            </div>
+        </div>
+
+        <!-- Live Desktop Feed Section -->
+        <section class="bg-cardbg border border-slate-700/60 rounded-xl p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-blue-400">Live Desktop View</h2>
+                <span id="connectionStatus" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-900/50 text-red-300 border border-red-700">Connecting...</span>
+            </div>
+            <div class="w-full bg-slate-950 border border-slate-800 rounded-lg overflow-hidden flex items-center justify-center min-h-[300px]">
+                <img id="screenStream" src="/automation/screenshot" alt="Desktop Live Stream" class="w-full h-auto rounded-lg object-contain max-h-[500px]" />
+            </div>
+        </section>
+
+        <!-- AI Prompt Task Section -->
+        <section id="cardSection" class="bg-cardbg border border-slate-700/60 rounded-xl p-6 shadow-xl space-y-4 transition-colors duration-200">
+            <h2 id="cardTitle" class="text-lg font-semibold text-blue-400">Autonomous Agent Prompt</h2>
+            <label id="cardLabel" class="block text-sm text-slate-300">Describe what you want the agent to do (Press Ctrl + Enter to run)</label>
+            <textarea id="taskPrompt" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-accent transition-colors duration-200" placeholder="Type your command here..."></textarea>
+            <div class="flex gap-3">
+                <button onclick="executeTaskPrompt()" id="runBtn" class="bg-accent hover:bg-blue-600 text-white font-medium px-5 py-2 rounded-lg transition">
+                    Run Prompt
+                </button>
+            </div>
+            <pre id="taskResult" class="response bg-slate-950 p-4 rounded-lg text-xs text-emerald-400 overflow-x-auto mt-2 hidden"></pre>
+        </section>
+
+    </div>
+
+    <script>
+        const htmlRoot = document.getElementById('htmlRoot');
+        const bodyRoot = document.getElementById('bodyRoot');
+        const headerSection = document.getElementById('headerSection');
+        const cardSection = document.getElementById('cardSection');
+        const cardTitle = document.getElementById('cardTitle');
+        const cardLabel = document.getElementById('cardLabel');
+        const taskPrompt = document.getElementById('taskPrompt');
+        const runBtn = document.getElementById('runBtn');
+        const themeSelector = document.getElementById('themeSelector');
+        const customPanel = document.getElementById('customPanel');
+        
+        const customBgColor = document.getElementById('customBgColor');
+        const customCardColor = document.getElementById('customCardColor');
+        const customAccentColor = document.getElementById('customAccentColor');
+        const rgbModeToggle = document.getElementById('rgbModeToggle');
+
+        function applyThemeStyles(mode) {
+            htmlRoot.classList.remove('dark');
+            customPanel.classList.add('hidden');
+            bodyRoot.className = "min-h-screen font-sans antialiased p-6 transition-colors duration-200";
+            headerSection.className = "flex flex-wrap justify-between items-center border-b pb-4 gap-4 transition-colors duration-200";
+            cardSection.className = "border rounded-xl p-6 shadow-xl space-y-4 transition-colors duration-200";
+            cardTitle.className = "text-lg font-semibold";
+            cardLabel.className = "block text-sm";
+            taskPrompt.className = "w-full border rounded-lg p-3 focus:outline-none transition-colors duration-200";
+            runBtn.className = "font-medium px-5 py-2 rounded-lg transition text-white";
+            themeSelector.className = "text-sm rounded-lg px-3 py-2 focus:outline-none border";
+            cardSection.classList.remove('animate-rgbBorder');
+            cardTitle.classList.remove('animate-rgb');
+
+            if (mode === 'light') {
+                bodyRoot.classList.add('bg-slate-100', 'text-slate-900');
+                headerSection.classList.add('border-slate-300');
+                cardSection.classList.add('bg-white', 'border-slate-300');
+                cardTitle.classList.add('text-blue-600');
+                cardLabel.classList.add('text-slate-600');
+                taskPrompt.classList.add('bg-slate-50', 'border-slate-300', 'text-slate-900', 'focus:border-blue-500');
+                runBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                themeSelector.classList.add('bg-white', 'border-slate-300', 'text-slate-800');
+            } else if (mode === 'custom') {
+                customPanel.classList.remove('hidden');
+                
+                const savedBg = localStorage.getItem('custom_bg') || '#0f172a';
+                const savedCard = localStorage.getItem('custom_card') || '#1e293b';
+                const savedAccent = localStorage.getItem('custom_accent') || '#3b82f6';
+                const savedRgb = localStorage.getItem('custom_rgb') === 'true';
+
+                customBgColor.value = savedBg;
+                customCardColor.value = savedCard;
+                customAccentColor.value = savedAccent;
+                rgbModeToggle.checked = savedRgb;
+
+                applyCustomPreferences();
+                themeSelector.classList.add('bg-slate-800', 'border-slate-700', 'text-slate-200');
+            } else {
+                htmlRoot.classList.add('dark');
+                bodyRoot.classList.add('bg-darkbg', 'text-slate-100');
+                headerSection.classList.add('border-slate-700');
+                cardSection.classList.add('bg-cardbg', 'border-slate-700/60');
+                cardTitle.classList.add('text-blue-400');
+                cardLabel.classList.add('text-slate-300');
+                taskPrompt.classList.add('bg-slate-900', 'border-slate-700', 'text-slate-100', 'focus:border-accent');
+                runBtn.classList.add('bg-accent', 'hover:bg-blue-600');
+                themeSelector.classList.add('bg-slate-800', 'border-slate-700', 'text-slate-200');
+            }
+        }
+
+        function applyCustomPreferences() {
+            const bg = customBgColor.value;
+            const card = customCardColor.value;
+            const accent = customAccentColor.value;
+            const isRgb = rgbModeToggle.checked;
+
+            localStorage.setItem('custom_bg', bg);
+            localStorage.setItem('custom_card', card);
+            localStorage.setItem('custom_accent', accent);
+            localStorage.setItem('custom_rgb', isRgb);
+
+            bodyRoot.style.backgroundColor = bg;
+            bodyRoot.style.color = '#f8fafc';
+            cardSection.style.backgroundColor = card;
+            taskPrompt.style.backgroundColor = bg;
+            taskPrompt.style.color = '#f8fafc';
+
+            if (isRgb) {
+                cardSection.classList.add('animate-rgbBorder');
+                cardTitle.classList.add('animate-rgb');
+                headerSection.style.borderColor = '#3b82f6';
+                taskPrompt.style.borderColor = '#3b82f6';
+                runBtn.style.backgroundColor = '#3b82f6';
+            } else {
+                cardSection.classList.remove('animate-rgbBorder');
+                cardTitle.classList.remove('animate-rgb');
+                headerSection.style.borderColor = accent + '55';
+                cardSection.style.borderColor = accent + '44';
+                cardTitle.style.color = accent;
+                taskPrompt.style.borderColor = accent + '55';
+                runBtn.style.backgroundColor = accent;
+            }
+        }
+
+        function setTheme(mode) {
+            localStorage.setItem('theme_preference', mode);
+            themeSelector.value = mode;
+
+            if (mode === 'sync') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyThemeStyles(prefersDark ? 'dark' : 'light');
+            } else {
+                applyThemeStyles(mode);
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme_preference') || 'dark';
+        setTheme(savedTheme);
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (localStorage.getItem('theme_preference') === 'sync') {
+                applyThemeStyles(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        taskPrompt.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                event.preventDefault();
+                executeTaskPrompt();
+            }
+        });
+    </script>
+
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local AI Agent Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b',
+                        accent: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body id="bodyRoot" class="bg-darkbg text-slate-100 min-h-screen font-sans antialiased flex items-center justify-center p-6 transition-colors duration-200">
+    <div class="max-w-md w-full space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center space-y-2">
+            <h1 class="text-3xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
+                🤖 Local AI Agent
+            </h1>
+            <p class="text-sm text-slate-400">Sign in to access your local agent control center</p>
+        </div>
+
+        <!-- Login Card Section -->
+        <section id="cardSection" class="bg-cardbg border border-slate-700/60 rounded-xl p-6 shadow-xl space-y-4 transition-colors duration-200">
+            <h2 id="cardTitle" class="text-lg font-semibold text-blue-400">Authentication Required</h2>
+            
+            <div class="space-y-3">
+                <label class="block text-sm text-slate-300">
+                    Username
+                    <input id="usernameInput" type="text" value="admin" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-accent transition-colors duration-200" />
+                </label>
+                
+                <label class="block text-sm text-slate-300">
+                    Password
+                    <input id="passwordInput" type="password" placeholder="Enter password..." class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-accent transition-colors duration-200" />
+                </label>
+            </div>
+
+            <button onclick="login()" id="loginBtn" class="w-full bg-accent hover:bg-blue-600 text-white font-medium p-3 rounded-lg transition shadow-lg">
+                Login
+            </button>
+
+            <div id="authResult" class="response bg-slate-950 p-4 rounded-lg text-xs text-red-400 overflow-x-auto mt-2 hidden"></div>
+        </section>
+
+    </div>
+
+    <script>
+        async function login() {
+            const username = document.getElementById('usernameInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const authResult = document.getElementById('authResult');
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username, password }),
+                });
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    window.location.href = '/dashboard';
+                } else {
+                    authResult.textContent = JSON.stringify(data, null, 2);
+                    authResult.classList.remove('hidden');
+                }
+            } catch (err) {
+                authResult.textContent = "Connection error: " + err.message;
+                authResult.classList.remove('hidden');
+            }
+        }
+
+        // Allow pressing Enter on password field to submit login
+        document.getElementById('passwordInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                login();
+            }
+        });
+    </script>
+</body>
+</html>
